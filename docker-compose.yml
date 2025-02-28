@@ -1,17 +1,7 @@
 services:
 
-    # original-autoheal:
-    #     container_name: original-autoheal
-    #     image: original-autoheal:latest
-    #     platform: linux/arm64/v8
-    #     build:
-    #       context: .
-    #       dockerfile: orig.Dockerfile
-
     lla-autoheal:
         container_name: lla-autoheal
-        # extends:
-        #   service: original-autoheal
         image: ${REGISTRY:-europe-west2-docker.pkg.dev/aero-chain-home/sspdar-client/}lla-autoheal:${VERSION:-latest}
         platform: linux/arm64/v8
         build:
