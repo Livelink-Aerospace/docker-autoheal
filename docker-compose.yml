@@ -1,17 +1,17 @@
 services:
 
-    original-autoheal:
-        container_name: original-autoheal
-        image: original-autoheal
-        platform: linux/arm64/v8
-        build:
-          context: .
-          dockerfile: orig.Dockerfile
+    # original-autoheal:
+    #     container_name: original-autoheal
+    #     image: original-autoheal:latest
+    #     platform: linux/arm64/v8
+    #     build:
+    #       context: .
+    #       dockerfile: orig.Dockerfile
 
     lla-autoheal:
         container_name: lla-autoheal
-        extends:
-          service: original-autoheal
+        # extends:
+        #   service: original-autoheal
         image: ${REGISTRY:-europe-west2-docker.pkg.dev/aero-chain-home/sspdar-client/}lla-autoheal:${VERSION:-latest}
         platform: linux/arm64/v8
         build:
@@ -19,11 +19,6 @@ services:
             dockerfile: ./lla.Dockerfile
             args:
                 AUTOHEAL_VERSION: latest
-        configs:
-          - source: mosquitto-config
-            target: /mosquitto/mosquitto.conf
-          - source: mosquitto-passwd
-            target: /mosquitto/passwd
         deploy:
             replicas: 1
         environment:
@@ -39,9 +34,3 @@ services:
             options:
                 max-size: "10M"
                 max-file: "10"
-
-configs:
-    mosquitto-config:
-        file: ./config/mosquitto/config/mosquitto.conf
-    mosquitto-passwd:
-        file: ./config/mosquitto/config/passwd
