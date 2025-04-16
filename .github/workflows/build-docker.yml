@@ -8,8 +8,9 @@ env:
   REGISTRY: europe-west2-docker.pkg.dev/aero-chain-home/sspdar-client/
   IMAGE_NAME: lla-autoheal
   PROJECT_ID: aero-chain-home
-  VERSION: "latest"
-  AUTOHEAL_VERSION: "latest"
+  VERSION: latest
+  AUTOHEAL_VERSION: latest
+  PLATFORMS: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le
 
 jobs:
   build-and-push:
@@ -48,7 +49,7 @@ jobs:
           context: .
           file: ./lla.Dockerfile
           push: true
-          platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le
+          platforms: ${{ env.PLATFORMS }}
           tags: |
             ${{ env.REGISTRY }}${{ env.IMAGE_NAME }}:${{ env.VERSION }}
 
