@@ -3,12 +3,16 @@ services:
     lla-autoheal:
         container_name: lla-autoheal
         image: ${REGISTRY:-europe-west2-docker.pkg.dev/aero-chain-home/sspdar-client/}lla-autoheal:${VERSION:-latest}
-        platform: linux/arm64/v8
         build:
             context: .
             dockerfile: ./lla.Dockerfile
             args:
                 AUTOHEAL_VERSION: latest
+            x-bake:
+                platforms:
+                    - linux/amd64
+                    - linux/arm64/v8
+                    - linux/arm/v7
         deploy:
             replicas: 1
         environment:
