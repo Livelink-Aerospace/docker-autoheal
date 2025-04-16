@@ -52,6 +52,7 @@ jobs:
           platforms: ${{ env.PLATFORMS }}
           tags: |
             ${{ env.REGISTRY }}${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+            ${{ env.REGISTRY }}${{ env.IMAGE_NAME }}:latest
 
       - name: Verify pushed image
         run: |
