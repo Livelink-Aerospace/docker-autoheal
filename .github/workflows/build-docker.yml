@@ -1,0 +1,57 @@
+name: Build and Push
+
+on:
+  release:
+    types: [published]
+
+env:
+  REGISTRY: europe-west2-docker.pkg.dev/aero-chain-home/sspdar-client/
+  IMAGE_NAME: lla-autoheal
+  PROJECT_ID: aero-chain-home
+  VERSION: "latest"
+  AUTOHEAL_VERSION: "latest"
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.AERO_CHAIN_HOME_6337D261E52E_CIUPLOADER_JSON }}
+
+      - name: Configure Docker to use Google Artifact Registry
+        run: |
+          gcloud auth configure-docker europe-west2-docker.pkg.dev
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # - if: github.ref == 'refs/heads/main'
+      #   name: Conditional(Set tag as `latest`)
+      #   run: echo "tag=willfarrell/autoheal:latest" >> $GITHUB_ENV
+
+      # - if: startsWith(github.ref, 'refs/tags/')
+      #   name: Conditional(Set tag as `{version}`)
+      #   run: echo "tag=willfarrell/autoheal:${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./lla.Dockerfile
+          push: true
+          platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64,linux/ppc64le
+          tags: |
+            ${{ env.REGISTRY }}${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+
+      - name: Verify pushed image
+        run: |
+          gcloud artifacts docker images list ${{ env.REGISTRY }} --filter="package=${{ env.IMAGE_NAME }}"

@@ -1,0 +1,30 @@
+services:
+
+    lla-autoheal:
+        container_name: lla-autoheal
+        image: ${REGISTRY:-europe-west2-docker.pkg.dev/aero-chain-home/sspdar-client/}lla-autoheal:${VERSION:-latest}
+        build:
+            context: .
+            dockerfile: ./lla.Dockerfile
+            args:
+                AUTOHEAL_VERSION: latest
+            x-bake:
+                platforms:
+                    - linux/amd64
+                    - linux/arm64/v8
+                    - linux/arm/v7
+        deploy:
+            replicas: 1
+        environment:
+            AUTOHEAL_INTERVAL: 10
+            AUTOHEAL_START_PERIOD: 10
+            AUTOHEAL_ONLY_MONITOR_RUNNING: true
+        network_mode: none
+        restart: always
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - /var/run/docker.sock:/var/run/docker.sock
+        logging:
+            options:
+                max-size: "10M"
+                max-file: "10"
