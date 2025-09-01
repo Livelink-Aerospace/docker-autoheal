@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Authenticate with Google Cloud
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@v3
         with:
           credentials_json: ${{ secrets.AERO_CHAIN_HOME_6337D261E52E_CIUPLOADER_JSON }}
 
